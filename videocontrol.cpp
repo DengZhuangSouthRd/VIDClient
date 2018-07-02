@@ -14,10 +14,13 @@ VideoControl::VideoControl(QWidget *parent) :
     m_pPlay_Timer = nullptr;
     m_lastFrameIdx = 0;
     m_curFrameIdx = 0;
+
+    m_pParam_Widget = new RunParameter();
 }
 
 VideoControl::~VideoControl() {
     delete ui;
+    delete m_pParam_Widget;
 }
 
 void VideoControl::setUrl(const QUrl &url) {
@@ -139,6 +142,11 @@ void VideoControl::on_action_open_triggered() {
     }
 }
 
+//弹出参数运行的设置框
+void VideoControl::on_action_Running_Info_triggered() {
+    m_pParam_Widget->show();
+}
+
 //对于按钮来说，可以进行播放和暂停
 void VideoControl::on_pushButton_startDetect_clicked() {
     QString cur_button_text = ui->pushButton_startDetect->text();
@@ -162,3 +170,4 @@ void VideoControl::on_horizontalSlider_play_control_valueChanged(int value) {
     m_curFrameIdx = value;
     showImage();
 }
+

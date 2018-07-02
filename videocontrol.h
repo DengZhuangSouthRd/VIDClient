@@ -22,6 +22,8 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/opencv.hpp>
 
+#include "runparameter.h"
+
 
 namespace Ui {
 class VideoControl;
@@ -47,6 +49,7 @@ private slots:
     void showImage();
 
     void on_action_open_triggered();
+    void on_action_Running_Info_triggered();
     void on_pushButton_startDetect_clicked();
     void on_horizontalSlider_play_control_valueChanged(int value);
 
@@ -57,6 +60,7 @@ private:
     cv::VideoCapture *m_pVideoCap;
     int m_video_fps; // 视频每秒播放多少帧
     QTimer* m_pPlay_Timer; //用于视频播放的定时器
+    RunParameter* m_pParam_Widget; // 运行参数设置
 
 private:
     Ui::VideoControl *ui;
