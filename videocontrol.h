@@ -39,8 +39,11 @@ public:
 
 public:
     void setUrl(const QUrl &url);
-    void fetchVideoFrames(const QString & video_path);
+    void fetchVideoFrames(const QString &video_path);
     void startDetection();
+
+public:
+    bool is_have_videoname(QString &video_name, QString &select_video);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

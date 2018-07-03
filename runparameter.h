@@ -26,6 +26,10 @@ public:
     explicit RunParameter(QWidget *parent = 0);
     ~RunParameter();
 
+public:
+    bool isConnected();
+    bool send_to_server(QString content);
+
 public slots:
     void enable_comBox_select_model();
     void parese_server_content();

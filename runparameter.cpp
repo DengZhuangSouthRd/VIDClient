@@ -11,9 +11,22 @@ RunParameter::RunParameter(QWidget *parent) :
     m_isConnected = false;
 }
 
-RunParameter::~RunParameter()
-{
+RunParameter::~RunParameter() {
     delete ui;
+}
+
+bool RunParameter::isConnected() {
+    return m_isConnected;
+}
+
+bool RunParameter::send_to_server(QString content) {
+    if(m_socket && m_isConnected) {
+        QByteArray bcontent(content.toStdString().data());
+        qint64 len = m_socket->write(bcontent);
+        qDebug() << len << " = " << bcontent.size();
+        return len == bcontent.size();
+    }
+    return false;
 }
 
 void RunParameter::on_comboBox_select_model_currentIndexChanged(int index) {

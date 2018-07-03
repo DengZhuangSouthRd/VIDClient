@@ -128,17 +128,49 @@ void VideoControl::paintEvent(QPaintEvent *event) {
     }
 }
 
+// 传入的参数是视频名字或者是视频的存储路径
+bool VideoControl::is_have_videoname(QString &video_name, QString &select_video) {
+    QSet<QString> video_set;
+    video_set.insert(tr("JL101B_MSS_20160904180811_000013363_101_001_L1B_MSS"));
+    video_set.insert(tr("JL101B_MSS_20161017092509_000014631_101_001_L1B_MSS"));
+    video_set.insert(tr("20170525_7.5114_突尼斯"));
+    video_set.insert(tr("20170602_5.0133_明尼阿波利斯"));
+
+    QStringList name_list = video_name.split("/");
+    int n = name_list.size();
+    QString name = name_list[n-1];
+    name_list = name.split(".");
+    name_list.removeAt(name_list.size()-1);
+    name = name_list.join(".");
+//    qDebug() << name;
+    select_video = name;
+    return video_set.contains(name);
+}
+
 void VideoControl::on_action_open_triggered() {
-    QFileDialog fileDialog(this);
-    fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
-    fileDialog.setWindowTitle(tr("加载检测视频"));
-    QString str = "*.avi,*.mp4,*.mpg";
-    QStringList supportedMimeTypes = str.split(",");
-    if (!supportedMimeTypes.isEmpty())
-        fileDialog.setMimeTypeFilters(supportedMimeTypes);
-    fileDialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::MoviesLocation).value(0, QDir::homePath()));
-    if (fileDialog.exec() == QDialog::Accepted) {
-        setUrl(fileDialog.selectedUrls().constFirst());
+    if (!(m_pParam_Widget && m_pParam_Widget->isConnected())) {
+        QMessageBox::warning(this, tr("Warning"), tr("请先连接服务器!"));
+    } else {
+        QFileDialog fileDialog(this);
+        fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+        fileDialog.setWindowTitle(tr("加载检测视频"));
+        QString str = "*.avi,*.mp4,*.mpg";
+        QStringList supportedMimeTypes = str.split(",");
+        if (!supportedMimeTypes.isEmpty())
+            fileDialog.setMimeTypeFilters(supportedMimeTypes);
+        fileDialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::MoviesLocation).value(0, QDir::homePath()));
+        if (fileDialog.exec() == QDialog::Accepted) {
+            QUrl url = fileDialog.selectedUrls().constFirst();
+            QString video_path = url.toString();
+            QString select_name = "";
+            bool is_have = is_have_videoname(video_path, select_name);
+            if(is_have) {
+                //先将视频相关信息送到服务器端进行处理
+                m_pParam_Widget->send_to_server(select_name);
+                //客户端进行视频数据的预处理
+                setUrl(url);
+            }
+        }
     }
 }
 
